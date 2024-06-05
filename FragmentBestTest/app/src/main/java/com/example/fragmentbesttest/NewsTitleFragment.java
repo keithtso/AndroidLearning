@@ -6,16 +6,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class NewsTitleFragment extends Fragment {
     private boolean isTwoPane;
@@ -25,7 +24,7 @@ public class NewsTitleFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.news_title_frag,container,false);
 
-        RecyclerView newsTitleRecycleView = (RecyclerView) view.findViewById(R.id.news_title_recycler_view);
+        RecyclerView newsTitleRecycleView = view.findViewById(R.id.news_title_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         newsTitleRecycleView.setLayoutManager(layoutManager);
 
@@ -59,24 +58,19 @@ public class NewsTitleFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        FragmentActivity activity =  getActivity();
-        View contenview = activity.findViewById(R.id.tttt);
-        if (getActivity().findViewById(R.id.news_content_layout) != null) {
-            isTwoPane = true;
-        } else {
-            isTwoPane = false;
-        }
+
+        isTwoPane = view.findViewById(R.id.news_title_frag_sw600) != null;
     }
 
     class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
-        private List<News> mNewsList;
+        private final List<News> mNewsList;
         class ViewHolder extends RecyclerView.ViewHolder {
             TextView newsTitleText;
 
             public ViewHolder(View view) {
                 super(view);
-                newsTitleText = (TextView) view.findViewById(R.id.news_title);
+                newsTitleText = view.findViewById(R.id.news_title);
             }
 
         }
@@ -91,18 +85,15 @@ public class NewsTitleFragment extends Fragment {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_item, parent, false);
             final ViewHolder viewHolder = new ViewHolder(view);
 
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    News news = mNewsList.get(viewHolder.getBindingAdapterPosition());
-                    if (isTwoPane) {
-                        NewsContentFragment newsContentFragment = (NewsContentFragment) getParentFragmentManager().findFragmentById(R.id.news_content_fragment);
-                        if (newsContentFragment != null) {
-                            newsContentFragment.refresh(news.getTitle(), news.getContent());
-                        }
-                    } else {
-                        NewsContentActivity.actionStart(getActivity(),news.getTitle(),news.getContent());
+            view.setOnClickListener(v -> {
+                News news = mNewsList.get(viewHolder.getBindingAdapterPosition());
+                if (isTwoPane) {
+                    NewsContentFragment newsContentFragment = (NewsContentFragment) getParentFragmentManager().findFragmentById(R.id.news_content_fragment);
+                    if (newsContentFragment != null) {
+                        newsContentFragment.refresh(news.getTitle(), news.getContent());
                     }
+                } else {
+                    NewsContentActivity.actionStart(getActivity(),news.getTitle(),news.getContent());
                 }
             });
 

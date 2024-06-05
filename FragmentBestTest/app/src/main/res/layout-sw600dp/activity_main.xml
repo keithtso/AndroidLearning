@@ -2,11 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#777"
-    android:id="@+id/tttt">
+    android:layout_height="match_parent" >
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/news_title_fragment"
         android:name="com.example.fragmentbesttest.NewsTitleFragment"
         android:layout_width="0dp"
@@ -17,10 +15,9 @@
         android:id="@+id/news_content_layout"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="3"
-        android:background="#A02B2B">
+        android:layout_weight="3" >
 
-        <fragment
+        <androidx.fragment.app.FragmentContainerView
             android:id="@+id/news_content_fragment"
             android:name="com.example.fragmentbesttest.NewsContentFragment"
             android:layout_width="match_parent"
