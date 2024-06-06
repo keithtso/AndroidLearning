@@ -16,17 +16,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 public class MainActivity extends AppCompatActivity {
 
     private IntentFilter intentFilter;
     private NetworkChangeReceiver networkChangeReceiver;
 
+    private LocalBroadcastManager localBroadcastManager;
+
+    private LocalReceiver localReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+        localBroadcastManager = LocalBroadcastManager.getInstance(this);
 
 //        intentFilter = new IntentFilter();
 //        intentFilter.addAction("android.net.com.CONNECTIVITY_CHANGE");
@@ -36,14 +43,30 @@ public class MainActivity extends AppCompatActivity {
 
         Button button = findViewById(R.id.button);
         button.setOnClickListener(v -> {
-            Intent intent = new Intent("com.example.broadcasttest.test.MY_BROADCAST");
+//            Intent intent = new Intent("com.example.broadcasttest.test.MY_BROADCAST");
+            Intent intent = new Intent("com.example.broadcasttest.LocalBroadcast");
             // Note: 发送broadcast的inter需要设置包名
-//            intent.setPackage(getPackageName());
-            intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-            v.getContext().sendBroadcast(intent);
+            intent.setPackage(getPackageName());
+//        sendBroadcast(intent);
+//            sendOrderedBroadcast(intent,null);
+
+            localBroadcastManager.sendBroadcast(intent);
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        intentFilter = new IntentFilter("com.example.broadcasttest.LocalBroadcast");
+        localReceiver = new LocalReceiver();
+        localBroadcastManager.registerReceiver(localReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(localReceiver);
+    }
 
     @Override
     protected void onDestroy() {
@@ -63,8 +86,13 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(context, "network not available", Toast.LENGTH_SHORT).show();
             }
+        }
+    }
 
-
+    class LocalReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context,"receive local broadcast",Toast.LENGTH_SHORT).show();
         }
     }
 }
