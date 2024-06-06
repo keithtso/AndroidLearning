@@ -36,9 +36,10 @@ public class MainActivity extends AppCompatActivity {
 
         Button button = findViewById(R.id.button);
         button.setOnClickListener(v -> {
-            Intent intent = new Intent("com.example.broadcasttest.MY_BROADCAST");
+            Intent intent = new Intent("com.example.broadcasttest.test.MY_BROADCAST");
             // Note: 发送broadcast的inter需要设置包名
-            intent.setPackage(getPackageName());
+//            intent.setPackage(getPackageName());
+            intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
             v.getContext().sendBroadcast(intent);
         });
     }
