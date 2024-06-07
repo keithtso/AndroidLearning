@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/edit_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Type something here"
+        />
+
+    <Button
+        android:id="@+id/sharePreference_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="save data"/>
+
+    <Button
+        android:id="@+id/sharePreference_restore_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="restore data"/>
+
+    <TextView
+        android:id="@+id/sharePreference_display"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:textColor="#1C27ED"
+        android:textSize="24sp" />
+
+</LinearLayout>
