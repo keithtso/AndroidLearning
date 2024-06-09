@@ -28,7 +28,7 @@ public class MySQLHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_BOOK); // 创建表格
         db.execSQL(CREAT_CATEGORY); // 创建分类
-        Toast.makeText(mContext, "Create successfully", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(mContext, "Create successfully", Toast.LENGTH_SHORT).show();
     }
 
     @Override
