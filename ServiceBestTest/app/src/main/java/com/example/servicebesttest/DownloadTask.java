@@ -40,25 +40,32 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
         super.onPreExecute();
     }
 
+    // 后台更新活动
     @Override
     protected Integer doInBackground(String... strings) {
         InputStream is = null;
         RandomAccessFile savedFile = null;
         File file = null;
-
+        Log.d("ddd", "doInBackground: do in background");
         try {
             long downloadLength = 0;
             String downloadURL = strings[0];
             String fileName = downloadURL.substring(downloadURL.lastIndexOf("/"));
             String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
+            Log.d("ddd", "doInBackground: file name:"+dir+fileName);
             file = new File(dir+fileName);
             if (file.exists()) {
+                Log.d("ddd", "doInBackground: file exist");
                 downloadLength = file.length();
+            } else {
+                Log.d("ddd", "doInBackground: file not exist");
             }
             long contentLength = getContentLength(downloadURL);
             if (contentLength == 0) {
+                Log.d("ddd", "doInBackground: contentlength 0");
                 return TYPE_FAILED;
             } else if (contentLength == downloadLength) {
+                Log.d("ddd", "doInBackground: contentlength"+contentLength+" dowloadlength "+downloadLength);
                 return TYPE_SUCCESS;
             }
             OkHttpClient client = new OkHttpClient();
@@ -82,6 +89,7 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
                         total += len;
                         savedFile.write(bytes,0,len);
                         int progress = (int) ((total + downloadLength) * 100 / contentLength);
+                        // 触发界面更新
                         publishProgress(progress);
                     }
                 }
@@ -90,6 +98,7 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
                 return TYPE_SUCCESS;
             }
         }catch (Exception e) {
+            Log.d("ddd", "doInBackground: exception");
             e.printStackTrace();
         }finally {
             try {
@@ -110,7 +119,7 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
         }
 
 
-        Log.d("ddd", "doInBackground: do in background");
+
         return TYPE_FAILED;
     }
 
@@ -139,6 +148,7 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
 
     }
 
+    //通知下载结果
     @Override
     protected void onPostExecute(Integer integer) {
         super.onPostExecute(integer);
@@ -168,11 +178,3 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
         isCanceled = true;
     }
 }
-
-//class ConcurrentTask implements Executor {
-//
-//    @Override
-//    public void execute(Runnable command) {
-//
-//    }
-//}
