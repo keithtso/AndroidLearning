@@ -1,6 +1,7 @@
 package com.example.materialtest;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -51,16 +52,26 @@ public class FruitAdapter extends RecyclerView.Adapter<FruitAdapter.ViewHolder> 
 
         View view = LayoutInflater.from(mContext).inflate(R.layout.fruit_item,parent,false);
 
-        return new ViewHolder(view);
+        final ViewHolder holder = new ViewHolder(view);
+        holder.cardView.setOnClickListener(v -> {
+            int position = holder.getBindingAdapterPosition();
+            Fruit fruit = mFruitList.get(position);
+            Intent intent = new Intent(mContext, FruitActivity.class);
+            intent.putExtra(FruitActivity.FRUIT_NAME,fruit.getName());
+            intent.putExtra(FruitActivity.FRUIT_IMAGE_ID,fruit.getImageID());
+            mContext.startActivity(intent);
+        });
+
+        return holder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull FruitAdapter.ViewHolder holder, int position) {
         Fruit fruit = mFruitList.get(position);
         holder.fruitName.setText(fruit.getName());
-//        Glide.with(mContext).load(fruit.getImageID()).into(holder.fruitImageView);
-        Bitmap bitmap = BitmapFactory.decodeResource(holder.fruitImageView.getResources(),fruit.getImageID());
-        holder.fruitImageView.setImageBitmap(bitmap);
+        Glide.with(mContext).load(fruit.getImageID()).into(holder.fruitImageView);
+//        Bitmap bitmap = BitmapFactory.decodeResource(holder.fruitImageView.getResources(),fruit.getImageID());
+//        holder.fruitImageView.setImageBitmap(bitmap);
     }
 
     @Override
