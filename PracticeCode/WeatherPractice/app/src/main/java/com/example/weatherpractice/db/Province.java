@@ -1,5 +1,6 @@
 package com.example.weatherpractice.db;
 
+import org.litepal.LitePal;
 import org.litepal.crud.LitePalSupport;
 
 public class Province extends LitePalSupport {
