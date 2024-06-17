@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -25,6 +27,14 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, WeatherPageActivity.class);
 
             startActivity(intent);
+
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            if (preferences.getString("weather",null) != null) {
+                Intent intent1 = new Intent(this, WeatherActivity.class);
+                startActivity(intent1);
+                finish();
+            }
+
         } else {
             requirePermission();
         }

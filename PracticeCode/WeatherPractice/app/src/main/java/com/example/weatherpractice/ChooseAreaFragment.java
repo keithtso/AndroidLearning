@@ -1,6 +1,7 @@
 package com.example.weatherpractice;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,10 +85,15 @@ public class ChooseAreaFragment extends Fragment {
             if (currentLevel == LEVEL_PROVINCE) {
                 selectedProvince = provinceList.get(i);
                 queryCities();
-            }
-            if (currentLevel == LEVEL_CITY) {
+            } else if (currentLevel == LEVEL_CITY) {
                 selectedCity = cityList.get(i);
                 queryCounties();
+            } else if (currentLevel == LEVEL_COUNTY) {
+                String weatherID = countyList.get(i).getWeatherID();
+                Intent intent = new Intent(getActivity(),WeatherActivity.class);
+                intent.putExtra("weather_id",weatherID);
+                startActivity(intent);
+                getActivity().finish();
             }
         });
 
