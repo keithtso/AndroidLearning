@@ -129,7 +129,7 @@ public class ChooseAreaFragment extends Fragment {
 
 
 
-    private void queryCounties() {
+    private void queryCities() {
         titleText.setText(selectedProvince.getProvinceName());
         backButton.setVisibility(View.GONE);
         cityList = LitePal.where("provinceid = ?",String.valueOf(selectedProvince.getId())).find(City.class);
@@ -147,7 +147,7 @@ public class ChooseAreaFragment extends Fragment {
         }
     }
 
-    private void queryCities() {
+    private void queryCounties() {
         titleText.setText(selectedCity.getCityName());
         backButton.setVisibility(View.GONE);
         countyList = LitePal.where("cityid = ?", String.valueOf(selectedCity.getId())).find(County.class);

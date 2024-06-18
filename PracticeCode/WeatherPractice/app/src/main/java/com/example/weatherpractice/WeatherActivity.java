@@ -7,34 +7,54 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.weatherpractice.gson.Forecast;
 import com.example.weatherpractice.gson.Weather;
 import com.example.weatherpractice.util.HttpUtil;
 import com.example.weatherpractice.util.Utility;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 public class WeatherActivity extends AppCompatActivity {
     public static final String HTTP_GUOLIN_TECH_API_WEATHER_CITYID = "http://guolin.tech/api/weather?cityid=";
+    public static final String HTTP_GUOLIN_TECH_API_BING_PIC = "https://cn.apihz.cn/api/img/bingapi.php?id=88888888&key=88888888&type=1";
     private ScrollView weatherLayout;
     private TextView titleCity, titleUpdateTime, degreeText, weatherInfoText;
     private LinearLayout forecastLayout;
     private TextView aqiText, pm25Text, comfortText, carWashText, sportText;
 
+    private ImageView bingPicImg;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            View decorView = getWindow().getDecorView();
+            decorView.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_FULLSCREEN |
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            );
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
+
         setContentView(R.layout.activity_weather);
 
         initializePageLayout();
@@ -53,6 +73,56 @@ public class WeatherActivity extends AppCompatActivity {
             requestWeather(weatherID);
         }
 
+        createBingPicImage(preferences);
+
+    }
+
+    private void createBingPicImage(SharedPreferences preferences) {
+        bingPicImg = findViewById(R.id.bing_pic_img);
+        String bingPic = preferences.getString("bing_pic",null);
+        if (bingPic != null) {
+            Log.d("ddd", "createBingPicImage: bingPic"+bingPic);
+            Glide.with(this).load(bingPic).into(bingPicImg);
+        } else {
+            loadBingPic();
+        }
+    }
+
+    /**
+     * load pic from bing
+     */
+    private void loadBingPic() {
+        String requestBingPic = HTTP_GUOLIN_TECH_API_BING_PIC;
+        HttpUtil.sendOkHttpRequest(requestBingPic, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                final String bingPic = response.body().string();
+                try {
+                    JSONObject picObject = new JSONObject(bingPic);
+                    String picURL = picObject.getString("msg");
+                    SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this).edit();
+                    editor.putString("bing_pic",picURL);
+                    editor.apply();
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Glide.with(WeatherActivity.this).load(picURL).into(bingPicImg);
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+
+            }
+        });
     }
 
     /**
@@ -94,6 +164,8 @@ public class WeatherActivity extends AppCompatActivity {
                 });
             }
         });
+
+        loadBingPic();
     }
 
     private void showWeatherInfo(Weather weather) {

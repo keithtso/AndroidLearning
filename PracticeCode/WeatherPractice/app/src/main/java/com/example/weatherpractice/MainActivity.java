@@ -24,10 +24,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (Build.VERSION.SDK_INT < 29 ){
-            Intent intent = new Intent(MainActivity.this, WeatherPageActivity.class);
-
-            startActivity(intent);
-
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             if (preferences.getString("weather",null) != null) {
                 Intent intent1 = new Intent(this, WeatherActivity.class);
@@ -73,9 +69,12 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Intent intent = new Intent(MainActivity.this, WeatherPageActivity.class);
-
-            startActivity(intent);
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            if (preferences.getString("weather",null) != null) {
+                Intent intent1 = new Intent(this, WeatherActivity.class);
+                startActivity(intent1);
+                finish();
+            }
         }
     }
 }
