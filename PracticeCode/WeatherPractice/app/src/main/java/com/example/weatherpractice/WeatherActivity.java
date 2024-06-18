@@ -10,6 +10,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -39,6 +40,7 @@ import java.io.IOException;
 public class WeatherActivity extends AppCompatActivity {
     public static final String HTTP_GUOLIN_TECH_API_WEATHER_CITYID = "http://guolin.tech/api/weather?cityid=";
     public static final String HTTP_GUOLIN_TECH_API_BING_PIC = "https://cn.apihz.cn/api/img/bingapi.php?id=88888888&key=88888888&type=1";
+    public static final String WEATHER_REQUEST_KEY = "&key=bc0418b57b2d4918819d3974ac1285d9";
     private ScrollView weatherLayout;
     private TextView titleCity, titleUpdateTime, degreeText, weatherInfoText;
     private LinearLayout forecastLayout;
@@ -162,7 +164,7 @@ public class WeatherActivity extends AppCompatActivity {
      */
     public void requestWeather(String weatherID) {
         String weatherURL = HTTP_GUOLIN_TECH_API_WEATHER_CITYID +
-                weatherID + "&key=bc0418b57b2d4918819d3974ac1285d9";
+                weatherID + WEATHER_REQUEST_KEY;
         HttpUtil.sendOkHttpRequest(weatherURL, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -204,6 +206,10 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private void showWeatherInfo(Weather weather) {
+
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
+
         String cityName = weather.basic.cityName;
         String updateTime = weather.basic.update.updateTime.split(" ")[1];
         String degree = weather.now.temperature + "C";
